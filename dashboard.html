@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard — WORKFLOW Inc.</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles/dashboard.css"/>
+</head>
+<body>
+
+  <!-- ── Top Navbar ── -->
+  <header class="top-navbar">
+    <div class="navbar-brand">
+      <span class="brand-name">Dashboard</span>
+    </div>
+    <div class="navbar-right">
+      <div class="bell-wrap">
+        <span class="bell">🔔</span>
+        <span class="bell-dot"></span>
+      </div>
+      <div class="user-pill" id="userPill">
+        <span class="user-avatar">👤</span>
+        <span class="user-label" id="userLabel">Narges</span>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── Layout ── -->
+  <div class="layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-section-label">NAVIGATION</div>
+      <nav>
+        <a href="index.html" class="nav-item active">
+          <span class="nav-icon">📊</span> Dashboard
+        </a>
+        <a href="archive.html" class="nav-item">
+          <span class="nav-icon">📄</span> Archives
+        </a>
+        <a href="settings.html" class="nav-item">
+          <span class="nav-icon">⚙️</span> Settings
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main content -->
+    <main class="main-content">
+
+      <h2 class="page-title">✏️ Submit Daily Report</h2>
+
+      <!-- Date & Shift row -->
+      <div class="card-section">
+        <div class="date-shift-row">
+          <div class="field-group">
+            <label class="field-label">📅 Date:</label>
+            <input type="date" class="form-select-custom" id="reportDate"/>
+          </div>
+          <div class="field-group">
+            <label class="field-label">🕐 Shift:</label>
+            <select class="form-select-custom" id="shiftSelect">
+              <option>[ Morning ⚡ ]</option>
+              <option>[ Afternoon ]</option>
+              <option>[ Night ]</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tasks completed -->
+      <div class="card-section">
+        <label class="section-label">Tasks Completed Today:</label>
+        <textarea
+          class="form-textarea"
+          id="tasksInput"
+          placeholder="Write down what tasks you accomplished today..."
+          rows="4"
+        ></textarea>
+      </div>
+
+      <!-- Blockers -->
+      <div class="card-section">
+        <label class="section-label">Blockers &amp; Challenges (Optional):</label>
+        <textarea
+          class="form-textarea"
+          id="blockersInput"
+          placeholder="Any roadblocks, & accomplished today..."
+          rows="4"
+        ></textarea>
+      </div>
+
+      <!-- Mood check-in -->
+      <div class="card-section mood-section">
+        <label class="section-label">⭐ Mood Check-in:</label>
+        <div class="mood-row">
+          <button class="mood-btn productive" id="mood-productive" onclick="selectMood('productive')">
+            <span class="mood-dot green"></span> Productive
+          </button>
+          <button class="mood-btn okay" id="mood-okay" onclick="selectMood('okay')">
+            <span class="mood-dot yellow"></span> Okay
+          </button>
+          <button class="mood-btn burned" id="mood-burned" onclick="selectMood('burned')">
+            <span class="mood-dot red"></span> Burned Out
+          </button>
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <button class="btn-submit" onclick="submitReport()">
+        🚀 Submit Report
+      </button>
+
+      <!-- Success message -->
+      <div class="success-msg" id="successMsg"></div>
+
+    </main>
+  </div>
+
+  <script>
+    let selectedMood = null;
+
+    // Set today's date by default
+    window.addEventListener('DOMContentLoaded', () => {
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('reportDate').value = today;
+
+      // Show logged-in username
+      const raw = localStorage.getItem('user') || sessionStorage.getItem('user');
+      if (raw) {
+        try {
+          const { name } = JSON.parse(raw);
+          document.getElementById('userLabel').textContent = name + ' (Out)';
+        } catch {}
+      }
+    });
+
+    function selectMood(mood) {
+      selectedMood = mood;
+      document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+      document.getElementById('mood-' + mood).classList.add('selected');
+    }
+
+    function submitReport() {
+      const date     = document.getElementById('reportDate').value;
+      const shift    = document.getElementById('shiftSelect').value;
+      const tasks    = document.getElementById('tasksInput').value.trim();
+      const blockers = document.getElementById('blockersInput').value.trim();
+      const successMsg = document.getElementById('successMsg');
+
+      if (!tasks) {
+        showSuccess('⚠️ Please fill in your tasks before submitting.', true);
+        return;
+      }
+
+      // Build report object
+      const report = {
+        id: Date.now(),
+        date,
+        shift,
+        tasks,
+        blockers,
+        mood: selectedMood || 'okay',
+        status: blockers ? 'BLOCKER' : 'Success'
+      };
+
+      // Save to localStorage array
+      const existing = JSON.parse(localStorage.getItem('wf_reports') || '[]');
+      existing.unshift(report);
+      localStorage.setItem('wf_reports', JSON.stringify(existing));
+
+      // Clear form
+      document.getElementById('tasksInput').value = '';
+      document.getElementById('blockersInput').value = '';
+      document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+      selectedMood = null;
+
+      showSuccess('✅ Report submitted successfully!', false);
+    }
+
+    function logout() {
+      localStorage.removeItem('user');
+      sessionStorage.removeItem('user');
+      window.location.href = 'login.html';
+    }
+
+    function showSuccess(msg, isWarning) {
+      const el = document.getElementById('successMsg');
+      el.textContent = msg;
+      el.style.background = isWarning ? '#fef9c3' : '#f0fdf4';
+      el.style.borderColor = isWarning ? '#fde047' : '#86efac';
+      el.style.color       = isWarning ? '#854d0e' : '#166534';
+      el.style.display = 'block';
+      setTimeout(() => el.style.display = 'none', 3000);
+    }
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
