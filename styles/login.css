@@ -1,0 +1,117 @@
+
+   * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #4a6fa5 0%, #6b8cba 30%, #8fa8c8 60%, #b0c4d8 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+
+
+    .card-wrapper {
+      background: rgba(180, 200, 220, 0.35);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.18);
+    }
+
+  
+    .login-card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 36px 32px 32px;
+      width: 310px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.10);
+    }
+
+  
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+   
+    .brand-name {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #1a1a2e;
+      letter-spacing: 0.01em;
+    }
+    .portal-subtitle {
+      font-size: 0.88rem;
+      color: #555;
+      margin-bottom: 24px;
+      margin-left: 2px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 9px 12px;
+      font-size: 0.88rem;
+      color: #333;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-control::placeholder { color: #aaa; }
+    .form-control:focus { border-color: #4a6fa5; }
+
+ 
+    .remember-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 18px;
+    }
+    .remember-row input[type="checkbox"] {
+      width: 14px; height: 14px;
+      cursor: pointer;
+    }
+    .remember-row label {
+      font-size: 0.82rem;
+      color: #555;
+      cursor: pointer;
+    }
+
+   
+    .btn-signin {
+      width: 100%;
+      padding: 10px;
+      background: #1a1a2e;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .btn-signin:hover  { background: #2d2d4e; }
+    .btn-signin:active { transform: scale(0.98); }
+    .btn-signin.loading { opacity: 0.75; pointer-events: none; }
+
+  
+    .error-msg {
+      display: none;
+      margin-top: 12px;
+      padding: 8px 10px;
+      background: #fef2f2;
+      border: 1px solid #fca5a5;
+      border-radius: 6px;
+      color: #dc2626;
+      font-size: 0.78rem;
+      text-align: center;
+    }
+
+
