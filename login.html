@@ -35,41 +35,53 @@
   </div>
 
   <script>
-    const VALID_USERNAME    = 'nargesAmam';
+    // Employee account
+    const VALID_USERNAME = 'nargesAmam';
     const VALID_PASSWORD = '1234';
 
+    // Admin account
+    const ADMIN_USERNAME = 'admin';
+    const ADMIN_PASSWORD = 'admin123';
+
     function handleSignIn() {
-      const username    = document.getElementById('username').value.trim();
+      const username = document.getElementById('username').value.trim();
       const password = document.getElementById('password').value;
       const remember = document.getElementById('rememberMe').checked;
-      const btn      = document.getElementById('signInBtn');
-      const btnText  = document.getElementById('btnText');
       const errorMsg = document.getElementById('errorMsg');
       const card     = document.getElementById('loginCard');
 
       errorMsg.style.display = 'none';
 
-      
-      if (!username) { showError('Please enter your username.');  return; }
-      if (!password) { showError('Please enter your password.');  return; }
+      // Validation
+      if (!username) { showError('Please enter your username.'); shake(card); return; }
+      if (!password) { showError('Please enter your password.'); shake(card); return; }
 
-      
-
-    if (username === VALID_USERNAME && password === VALID_PASSWORD) {
       const store = remember ? localStorage : sessionStorage;
-      store.setItem('user', JSON.stringify({ name: 'Narges', username }));
-      window.location.href = 'dashboard.html';
-    } else {
-      btn.classList.remove('loading');
-      btnText.style.display = 'block';
-      showError('Invalid username or password.');
-    };
+
+      if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+        // Admin login
+        store.setItem('user', JSON.stringify({ name: 'Admin', username, role: 'admin' }));
+        window.location.href = 'archive.html';
+      } else if (username === VALID_USERNAME && password === VALID_PASSWORD) {
+        // Employee login
+        store.setItem('user', JSON.stringify({ name: 'Narges', username, role: 'employee' }));
+        window.location.href = 'dashboard.html';
+      } else {
+        showError('Invalid username or password.');
+        shake(card);
+      }
     }
 
     function showError(msg) {
       const area = document.getElementById('errorMsg');
       area.textContent = msg;
       area.style.display = 'block';
+    }
+
+    function shake(el) {
+      el.classList.remove('shake');
+      void el.offsetWidth;
+      el.classList.add('shake');
     }
 
     document.addEventListener('keydown', e => { if (e.key === 'Enter') handleSignIn(); });
