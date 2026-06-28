@@ -1,0 +1,136 @@
+.back-link {
+  display: inline-block;
+  font-size: 0.85rem;
+  color: #3b82f6;
+  text-decoration: none;
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+.back-link:hover { text-decoration: underline; }
+
+.detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.detail-card {
+  background: #fff;
+  border: 1px solid #dde3ea;
+  border-radius: 10px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.detail-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #94a3b8;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.detail-value {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.detail-section {
+  background: #fff;
+  border: 1px solid #dde3ea;
+  border-radius: 10px;
+  padding: 18px 20px;
+  margin-bottom: 14px;
+}
+
+.detail-section-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 10px;
+}
+
+.detail-text {
+  font-size: 0.9rem;
+  color: #475569;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.detail-footer {
+  font-size: 0.78rem;
+  color: #94a3b8;
+  margin-top: 8px;
+}
+
+.not-found {
+  background: #fff;
+  border: 1px solid #fca5a5;
+  border-radius: 10px;
+  padding: 40px 24px;
+  text-align: center;
+  color: #991b1b;
+  font-size: 0.95rem;
+}
+
+/* ── Feedback section ── */
+.feedback-section {
+  border-color: #bfdbfe;
+  background: #f8fbff;
+}
+
+.feedback-textarea {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 0.88rem;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.2s;
+  margin-bottom: 10px;
+}
+.feedback-textarea:focus { border-color: #3b82f6; }
+
+.btn-save-feedback {
+  padding: 9px 18px;
+  background: #3b82f6;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-save-feedback:hover { background: #2563eb; }
+
+.feedback-saved-msg {
+  display: none;
+  margin-top: 10px;
+  padding: 7px 12px;
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  border-radius: 7px;
+  color: #166534;
+  font-size: 0.82rem;
+}
+
+@media (max-width: 640px) {
+  .detail-grid { grid-template-columns: 1fr; }
+}
