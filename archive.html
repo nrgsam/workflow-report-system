@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Archives — WORKFLOW Inc.</title>
+  <title>Archives</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <link rel="stylesheet" href="styles/archive.css"/>
 </head>
@@ -11,18 +11,13 @@
 
   <!-- ── Top Navbar ── -->
   <header class="top-navbar">
-    <div class="navbar-brand">
-      <span class="brand-name">Dashboard</span>
-    </div>
+  
     <div class="navbar-right">
-      <div class="bell-wrap">
-        <span class="bell">🔔</span>
-        <span class="bell-dot"></span>
-      </div>
+  
       <div class="user-pill">
-        <span class="user-avatar">👤</span>
-        <span class="user-label" id="userLabel">Narges</span>
-        <button class="logout-btn" onclick="logout()">Logout</button>
+       
+        <span class="user-label" id="userLabel">Narges (Out)</span>
+        <button class="logout-btn" onclick="logout()"> Logout</button>
       </div>
     </div>
   </header>
@@ -35,13 +30,13 @@
       <div class="sidebar-section-label">NAVIGATION</div>
       <nav>
         <a href="dashboard.html" class="nav-item">
-          <span class="nav-icon">📊</span> Dashboard
+          <span class="nav-icon"></span> Dashboard
         </a>
         <a href="archive.html" class="nav-item active">
-          <span class="nav-icon">📄</span> Archives
+          <span class="nav-icon"></span> Archives
         </a>
         <a href="settings.html" class="nav-item">
-          <span class="nav-icon">⚙️</span> Settings
+          <span class="nav-icon"></span> Settings
         </a>
       </nav>
     </aside>
@@ -49,7 +44,7 @@
     <!-- Main content -->
     <main class="main-content">
 
-      <h2 class="page-title">📋 Team Report History</h2>
+      <h2 class="page-title"> Team Report History</h2>
 
       <!-- Filters -->
       <div class="filter-row">
@@ -57,7 +52,7 @@
           type="text"
           class="filter-input"
           id="searchInput"
-          placeholder="🔍 Search tasks..."
+          placeholder=" Search tasks..."
           oninput="renderTable()"
         />
         <input
@@ -75,11 +70,13 @@
           <thead>
             <tr>
               <th>Date</th>
+              <th id="employeeHeader" style="display:none;">Employee</th>
               <th>Shift</th>
               <th>Tasks Summary</th>
               <th>Blockers</th>
               <th>Mood</th>
               <th>Status</th>
+              <th id="feedbackHeader" style="display:none;">Feedback</th>
             </tr>
           </thead>
           <tbody id="tableBody">
@@ -100,16 +97,25 @@
   <script>
     const ROWS_PER_PAGE = 5;
     let currentPage = 1;
+    let isAdmin = false;
 
     window.addEventListener('DOMContentLoaded', () => {
-      // Show username
+      // Show username + check role
       const raw = localStorage.getItem('user') || sessionStorage.getItem('user');
       if (raw) {
         try {
-          const { name } = JSON.parse(raw);
-          document.getElementById('userLabel').textContent = name + ' (Out)';
+          const userObj = JSON.parse(raw);
+          document.getElementById('userLabel').textContent = userObj.name + ' (Out)';
+          isAdmin = userObj.role === 'admin';
         } catch {}
       }
+
+      if (isAdmin) {
+        document.getElementById('employeeHeader').style.display = '';
+        document.getElementById('feedbackHeader').style.display = '';
+        document.querySelector('.page-title').textContent = ' Admin — All Employee Reports';
+      }
+
       renderTable();
     });
 
@@ -157,18 +163,27 @@
       tbody.innerHTML = paged.map(r => {
         const statusClass = r.status === 'BLOCKER' ? 'badge-blocker' : 'badge-success';
         const statusLabel = r.status === 'BLOCKER'
-          ? '🔴 BLOCKER'
-          : '🟢 Success';
-        const moodEmoji = { productive: '💚', okay: '💛', burned: '🔴' }[r.mood] || '💛';
+          ? ' BLOCKER'
+          : ' Success';
+        const moodEmoji = { productive: 'productive', okay: 'okay', burned: 'burned' }[r.mood] ;
+
+        const employeeCell = isAdmin
+          ? `<td>${escHtml(r.employeeName || 'Narges')}</td>`
+          : '';
+        const feedbackCell = isAdmin
+          ? `<td>${r.feedback ? '<span class="badge badge-success">✅ Given</span>' : '<span class="badge-pending">⏳ Pending</span>'}</td>`
+          : '';
 
         return `
-          <tr>
+          <tr class="clickable-row" onclick="window.location.href='archive-detail.html?id=${r.id}'">
             <td>${formatDate(r.date)}</td>
+            ${employeeCell}
             <td><span class="shift-label">${r.shift}</span></td>
             <td class="tasks-cell">${escHtml(r.tasks)}</td>
             <td class="tasks-cell">${r.blockers ? escHtml(r.blockers) : '<span class="none-label">—</span>'}</td>
             <td>${moodEmoji}</td>
             <td><span class="badge ${statusClass}">${statusLabel}</span></td>
+            ${feedbackCell}
           </tr>`;
       }).join('');
 
